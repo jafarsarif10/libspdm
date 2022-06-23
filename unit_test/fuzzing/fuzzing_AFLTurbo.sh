@@ -44,7 +44,7 @@ export script_path="$(cd "$(dirname $0)";pwd)"
 export libspdm_path=$script_path/../..
 export fuzzing_path=$libspdm_path/unit_test/fuzzing
 export fuzzing_seeds=$libspdm_path/unit_test/fuzzing/seeds
-export TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
+export TIMESTAMP=`date +%Y-%m-%d %H:%M:%S`
 
 # Here '~/aflturbo/' is the AFLTurbo PATH, replace it with yours.
 # export AFL_PATH=~/aflturbo/
@@ -151,6 +151,9 @@ test_x509_certificate_check
 test_spdm_responder_set_certificate
 test_spdm_requester_set_certificate
 )
+
+export FUZZ_START_TIME=`date +%Y-%m-%d_%H:%M:%S`
+
 for ((i=0;i<${#cmds[*]};i++))
 do
     echo ${cmds[$i]}
@@ -171,7 +174,7 @@ if [[ $2 = "ON" ]]; then
     mkdir coverage_log
     cd coverage_log
     lcov --capture --directory $libspdm_path --output-file coverage.info
-    genhtml coverage.info --output-directory . --title "Started at : $TIMESTAMP | Crypto lib : $1 | AFL Turbo Fuzzing | Duration : $duration secs per testcase"
+    genhtml coverage.info --output-directory . --title "Started at : $FUZZ_START_TIME | Crypto lib : $1 | AFL Turbo Fuzzing | Duration : $duration secs per testcase"
 fi
 
 function walk_dir(){
